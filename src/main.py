@@ -26,7 +26,6 @@ def load():
 def request_world_state() -> dict:
     return world.serialize_state_for_frontend()
 
-
 # Sets up the world with default values. 
 # see defaults.py.
 def setup_defaults() -> None:
