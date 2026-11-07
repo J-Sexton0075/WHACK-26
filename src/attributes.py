@@ -4,7 +4,7 @@ from exceptions import *
 class Attribute(): # A simple outline for any possible attribute to serve in translation.
     name : str # The name of the attribute. 
     val : float 
-    def __init__(self, _name : str, _val : float):
+    def __init__(self, _name : str, _val : float) -> None:
         self.name = _name
         self.val = _val
     def __str__(self) -> str:
@@ -18,22 +18,22 @@ class Attribute(): # A simple outline for any possible attribute to serve in tra
         return not self.__eq__(other)
     
     
-    def __add__(self, other) -> Attribute:
+    def __add__(self, other) -> "Attribute":
         if (self.name == other.name):
             return Attribute(self.name, self.val + other.val)
         else:
             raise IncompatibleAttribute(self, other)
-    def __sub__(self, other) -> Attribute:
+    def __sub__(self, other) -> "Attribute":
         if (self.name == other.name):
             return Attribute(self.name, self.val - other.val)
         else:
             raise IncompatibleAttribute(self, other)
 
-class AttributeCollection(): # Generic collection of attributes. 
+class AttributeCollection(): # Generic collection of attributes.
     collection : dict
 
     @overload 
-    def __init__(self, keyval : tuple):
+    def __init__(self, keyval : tuple) -> None:
         if len(keyval) != 2:
             raise IndexError()
         else:
@@ -41,12 +41,12 @@ class AttributeCollection(): # Generic collection of attributes.
                 keyval[0] : keyval[1]
             }
     @overload
-    def __init__(self, key : str, val : float):
+    def __init__(self, key : str, val : float) -> None:
         self.collection = {
                 key : val
         }
     @overload
-    def __init__(self, collection : dict):
+    def __init__(self, collection : dict) -> None:
         self.collection = collection
 
     def __str__(self) -> str:
@@ -66,10 +66,10 @@ class AttributeCollection(): # Generic collection of attributes.
     def __contains__(self, val : float):
         return val in self.collection.values
 
-    def __iter__(self):
+    def __iter__(self) -> None:
         return iter(self.collection) # python do this for me
 
-    def toList(self): # Return the list in the format my teammates need it in
+    def toList(self) -> list: # Return the list in the format my teammates need it in
         myList : list = []
         for key, value in self.collection.items():
             if value == 0:
@@ -77,5 +77,3 @@ class AttributeCollection(): # Generic collection of attributes.
             else:
                 myList.append([key, value])
         return myList
-        
-

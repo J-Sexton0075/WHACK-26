@@ -1,10 +1,8 @@
 from exceptions import *
-
-
-    
+from attributes import Attribute, AttributeCollection
 
 def main():
     pass
 
-def simulate():
-    pass
+if __name__ == "main":
+    main();
