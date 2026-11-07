@@ -7,4 +7,5 @@ def edit_island_attributes(world : WorldState, island_id, changing : AttributeCo
     world.entities_get_island[island_id].changeVariables(changing.toList())
 
 def edit_agent_attributes(world : WorldState, agent_id, changing : AttributeCollection):
-    world.entities_get 
+    world.entities_get_agent[agent_id].changeVariables(changing.toList())
+    
