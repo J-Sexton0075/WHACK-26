@@ -1,4 +1,5 @@
 # tiny archipelago 🌴
+@author chatgpt
 
 A static, dependency-free **frontend** for the Python island simulator. Its sea,
 islands, people, huts, palm trees and animations are deliberately handmade
