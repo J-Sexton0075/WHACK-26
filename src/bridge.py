@@ -15,9 +15,9 @@ process GETs /api/next to obtain the full frontend submission (including
 its deleted_*_ids), then POSTs /api/result with the simulated world state.
 
 Examples:
-    python bridge.py --python-dir ./python_scripts --frontend-dir .
-    python bridge.py --python-dir ../my-python-code --frontend-dir .
-    python bridge.py --mode relay --python-dir ../my-python-code --frontend-dir .
+    python src/bridge.py --python-dir ./python_scripts --frontend-dir .
+    python src/bridge.py --python-dir ../my-python-code --frontend-dir .
+    python src/bridge.py --mode relay --python-dir ../my-python-code --frontend-dir .
 
 Open http://localhost:8000/ after starting this program. The bridge and
 browser communicate over localhost only; no internet service is used.
@@ -86,7 +86,7 @@ def locate_frontend_dir(explicit: str | None) -> Path:
     if explicit:
         directory = Path(explicit).expanduser().resolve()
         if not (directory / "index.html").is_file() or not (directory / "app.js").is_file():
-            raise FileNotFoundError(f"Not a Partial Wace Island Simulator frontend directory: {directory}")
+            raise FileNotFoundError(f"Not a Partial Wace Mundus Novus frontend directory: {directory}")
         return directory
     for candidate in (HERE, HERE / "partial-wace", HERE.parent / "partial-wace"):
         if (candidate / "index.html").is_file() and (candidate / "app.js").is_file():
@@ -408,7 +408,7 @@ def make_handler(frontend: Path, bridge: Bridge):
 
 
 def main():
-    parser = argparse.ArgumentParser(description="Partial Wace Island Simulator local Python-to-browser bridge")
+    parser = argparse.ArgumentParser(description="Partial Wace Mundus Novus local Python-to-browser bridge")
     parser.add_argument("--python-dir", help="Directory containing your UNMODIFIED Python scripts")
     parser.add_argument("--frontend-dir", help="Directory containing the UNMODIFIED index.html/app.js")
     parser.add_argument("--mode", choices=("engine", "relay"), default="engine",
@@ -436,7 +436,7 @@ def main():
         parser.error("Your Python directory has no simulation_engine.py; pass --mode relay instead")
     server = ThreadingHTTPServer(("127.0.0.1", args.port), make_handler(frontend, state))
     server.daemon_threads = True
-    print(f"Partial Wace Island Simulator frontend: http://localhost:{args.port}")
+    print(f"Partial Wace Mundus Novus frontend: http://localhost:{args.port}")
     print(f"Python scripts (unchanged): {scripts}")
     print(f"Frontend files (unchanged): {frontend}")
     print(f"Bridge mode: {args.mode}")
