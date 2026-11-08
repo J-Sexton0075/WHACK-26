@@ -1,0 +1,89 @@
+
+{
+  "version": 1,
+  "seed": {
+    "enabled": false,
+    "value": 42
+  },
+  "islands": {
+    "min": 2,
+    "max": 7
+  },
+  "population": {
+    "min_per_island": 2,
+    "max_per_island": 40,
+    "name_mode": "generated",
+    "name_prefix": "Settler"
+  },
+  "layout": {
+    "scatter": true,
+    "margin": 45
+  },
+  "weights": {
+    "island": {},
+    "agent": {}
+  },
+  "fields": {
+    "island": {
+      "fertility": {"enabled": true, "min": 0.5, "max": 3, "integer": false},
+      "food_availability": {"enabled": true, "min": 5, "max": 100, "integer": true},
+      "wood_availability": {"enabled": true, "min": 5, "max": 100, "integer": true},
+      "resource_regeneration_rate": {"enabled": true, "min": 0.5, "max": 3, "integer": false},
+      "weather": {"enabled": true, "values": ["Cold", "Temperate", "Hot", "Tropical", "Dry", "Stormy"]},
+      "disease_risk": {"enabled": true, "min": 0, "max": 0.3, "integer": false},
+      "culture_trait": {"enabled": true, "values": ["Hardworking", "Peaceful", "Nomadic", "Cooperative", "Competitive"]}
+    },
+    "agent": {
+      "age": {"enabled": true, "min": 16, "max": 80, "integer": true},
+      "occupation": {"enabled": false, "values": ["farmer", "hunter", "builder", "crafter", "trader", "fisher", "unemployed"]},
+      "personalityType": {"enabled": false, "values": ["Calm", "Strategic", "Nonchalant", "Resourceful", "Nice", "Selfish", "Intellectual", "Cunning"]},
+      "health": {"enabled": true, "min": 60, "max": 100, "integer": true},
+      "wealth": {"enabled": true, "min": 0, "max": 150, "integer": false},
+      "is_alive": {"enabled": false, "true_probability": 1},
+      "food": {"enabled": true, "min": 0, "max": 8, "integer": true},
+      "wood": {"enabled": true, "min": 0, "max": 8, "integer": true},
+      "tools": {"enabled": true, "min": 0, "max": 3, "integer": true},
+      "farming_skill": {"enabled": true, "min": 1, "max": 10, "integer": true},
+      "hunting_skill": {"enabled": true, "min": 1, "max": 10, "integer": true},
+      "crafting_skill": {"enabled": true, "min": 1, "max": 10, "integer": true},
+      "cooperation_trait": {"enabled": true, "min": 0, "max": 100, "integer": true},
+      "aggression_trait": {"enabled": true, "min": 0, "max": 100, "integer": true}
+    },
+    "world": {
+      "current_year": {"enabled": true, "min": 1, "max": 1, "integer": true},
+      "max_years": {"enabled": false, "min": 20, "max": 50, "integer": true},
+      "active_seed": {"enabled": true, "min": 1, "max": 999999, "integer": true},
+      "scarcity_level": {
+        "enabled": true,
+        "min": 0,
+        "max": 1,
+        "integer": false,
+        "decimals": 1
+      },
+      "price_index.food": {"enabled": true, "min": 0.5, "max": 2, "integer": false},
+      "price_index.wood": {"enabled": true, "min": 0.5, "max": 2, "integer": false},
+      "price_index.tools": {"enabled": true, "min": 2, "max": 8, "integer": false}
+    }
+  },
+  "complex": {
+    "needs": {
+      "enabled": true,
+      "pool": ["food", "wood", "tools", "shelter"],
+      "min_items": 0,
+      "max_items": 2
+    },
+    "goals": {
+      "enabled": true,
+      "pool": ["survive", "trade", "help others", "accumulate wealth", "build tools"],
+      "min_items": 0,
+      "max_items": 2
+    },
+    "trust_graph": {
+      "enabled": true,
+      "min_links": 0,
+      "max_links": 2,
+      "score_min": 20,
+      "score_max": 80
+    }
+  }
+}

@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#f4eedc" />
+  <title>Partial Wace Island Simulator</title>
+  <link rel="stylesheet" href="./styles.css" />
+</head>
+<body>
+  <div id="app">
+    <header class="masthead">
+      <div class="brand"><div class="brand-stamp" aria-hidden="true"><i></i><i></i><i></i></div><div><h1>Island Population Simulator</h1><div class="subbrand">PARTIAL WACE</div></div></div>
+      <div class="header-actions">
+        <div id="connectionStatus" class="status-tag">CONNECTING...</div>
+
+        <div class="randomize-wrap">
+          <button id="randomizeBtn" class="btn btn-subtle" type="button">
+            Randomize
+          </button>
+
+          <button
+            id="randomizeOptionsBtn"
+            class="randomize-options"
+            type="button"
+            aria-label="Randomizer settings"
+            aria-expanded="false"
+            aria-controls="randomizePanel"
+          >▾</button>
+
+          <div id="randomizePanel" class="randomize-panel" hidden></div>
+        </div>
+
+        <button id="resetBtn" class="btn btn-subtle" type="button"><<< Reset</button>
+        <button id="startBtn" class="btn btn-start" type="button">
+          <span class="play-icon">>>></span> Start simulation
+        </button>
+      </div>
+    </header>
+    <main class="workspace">
+      <aside class="sidebar sidebar-left" id="leftPanel">
+        <nav class="side-tabs" aria-label="Workspace tabs">
+          <button class="tab active" data-tab="build" type="button">BUILD</button>
+          <button class="tab" data-tab="profiles" type="button">PROFILES</button>
+          <button class="tab" data-tab="events" type="button">EVENT LOG <span id="logCount" class="tab-count">0</span></button>
+        </nav>
+        <div id="leftContent" class="side-scroll"></div>
+      </aside>
+      <section class="center-stage" aria-label="Island simulation">
+        <div class="map-head">
+          <div>
+            <span class="map-light"></span>
+            <b>THE SEA</b>
+            <span class="dim">/ world overview</span>
+          </div>
+
+          <div class="map-head-right">
+            <button id="zoomBtn" class="small-btn" type="button" disabled>
+              + ZOOM TO ISLAND
+            </button>
+
+            <div id="mapSummary" class="map-meta">
+              0 islands, 0 people
+            </div>
+          </div>
+        </div>
+        <div id="mapFrame" class="map-frame" tabindex="0" aria-label="Editable pixel art map. Drop island or people profiles here. Drag islands to move or into a sidebar to delete.">
+          <canvas id="seaCanvas" width="480" height="330" aria-label="Pixel map of the islands"></canvas>
+          <div id="mapMessage" class="map-message" hidden></div>
+          <div id="mapCorner" class="map-corner">WORLD 01, NOT RUNNING</div>          
+          <div id="worldStats" class="world-stats">
+
+            <button
+              id="worldStatsToggle"
+              class="world-stats-toggle"
+              type="button"
+              aria-expanded="true"
+              aria-controls="worldStatsBody"
+            >
+              WORLD STATS [-]
+            </button>
+
+            <div id="worldStatsBody" class="world-stats-body">
+
+              <div>
+                <span>WORLD WEALTH</span>
+                <strong id="worldWealth">0</strong>
+              </div>
+
+              <div>
+                <span>AVG HEALTH</span>
+                <strong id="worldHealth">-</strong>
+              </div>
+
+            </div>
+
+          </div>
+          <div id="mapLoading" class="sim-overlay" hidden><span class="blink">» »</span> SIMULATING <span class="blink">» »</span><small>Waiting for a new state from Python...</small></div>
+          <div id="emptyHint" class="empty-hint" hidden>DRAG AN ISLAND HERE<br/><span>OR USE THE + PLACE BUTTON</span></div>
+        </div>
+        <div class="map-foot"><div class="map-foot-help">drag land to move &nbsp; / &nbsp; drop on side panel to remove &nbsp; / &nbsp; click a person to inspect</div><div id="yearLabel">YEAR 1 / 30</div></div>
+        <div class="timeline-panel">
+          <div class="timeline-header"><div><b>TIME MACHINE</b></div><button id="restoreBtn" class="small-btn" hidden>RESTORE THIS STATE</button></div>
+          <div id="timeline" class="timeline"></div>
+          <div id="timelineNote" class="timeline-note">Start the simulation to make a new snapshot. The little people are only actors; Python decides what happens.</div>
+        </div>
+      </section>
+      <aside class="sidebar sidebar-right" id="rightPanel">
+        <div class="inspector-top"><div><span class="eyebrow">SELECTED OBJECT</span><h2 id="inspectorTitle">Inspector</h2></div><button id="closeInspector" title="Clear selection" type="button">×</button></div>
+        <div class="side-scroll" id="inspectorContent"></div>
+        <div class="side-footer" id="inspectFoot">CLICK A PATCH OF LAND TO EDIT</div>
+      </aside>
+    </main>
+    <div id="toast" class="toast" role="status" aria-live="polite" hidden></div>
+  </div>
+  <script type="module" src="./app.js"></script>
+</body>
+</html>

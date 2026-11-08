@@ -1,6 +1,6 @@
 from exceptions import *
 from attributes import Attribute, AttributeCollection
-from interface import Agent, Island, WorldState
+from world import Agent, Island, WorldState
 import defaults
 
 # Main method. entry point for the rest of the program
@@ -12,19 +12,20 @@ def main() -> None:
 # restart. currently defaults to main method.
 # call when restarting the simulation
 def restart() -> None: 
-    if __name__ == "main":
+    if __name__ == "__main__":
         main()
 
 # load. currently defaults to main method
 # call when loading the app for the first time
 def load():
-    if __name__ == "main":
+    if __name__ == "__main__":
         main()
 
 # Requests the world state in a serialised format for passing to the frontend
 # returns a serialised dictionary for the entire world state
 def request_world_state() -> dict:
     return world.serialize_state_for_frontend()
+
 
 # Sets up the world with default values. 
 # see defaults.py.
@@ -37,5 +38,5 @@ def setup_defaults() -> None:
 
 
 world = WorldState()
-if __name__ == "main":
+if __name__ == "__main__":
     main();

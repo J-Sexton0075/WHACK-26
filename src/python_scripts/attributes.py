@@ -1,7 +1,6 @@
 from typing import overload
 from exceptions import *
 
-## deprecated?
 class Attribute(): # A simple outline for any possible attribute to serve in translation.
     name : str # The name of the attribute. 
     val : float 
@@ -50,13 +49,10 @@ class AttributeCollection(): # Generic collection of attributes.
     def __init__(self, collection : dict) -> None:
         self.collection = collection
 
-    def add_to(self, key : str, val : any) -> None:
-        self.collection[key] = val
-
     def __str__(self) -> str:
         return f"AttributeCollection instance with dictionary collection {self.collection}"
     def __repr__(self) -> str:
-        return f"AttributeCollection({self.collection})"
+        return f"(default constructor) AttributeCollection({self.collection})"
 
     def __getitem__(self, key : str) -> float:
         return self.collection[key]
