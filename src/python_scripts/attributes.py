@@ -1,6 +1,8 @@
 from typing import overload
 from exceptions import *
 
+# Practically just a key-value pair idea that I originally had
+# deprecated since 2026/11/07
 class Attribute(): # A simple outline for any possible attribute to serve in translation.
     name : str # The name of the attribute. 
     val : float 
@@ -29,7 +31,8 @@ class Attribute(): # A simple outline for any possible attribute to serve in tra
         else:
             raise IncompatibleAttribute(self, other)
 
-class AttributeCollection(): # Generic collection of attributes.
+# A generic collection of attributes.
+class AttributeCollection():
     collection : dict
 
     @overload 
@@ -69,6 +72,9 @@ class AttributeCollection(): # Generic collection of attributes.
     def __iter__(self) -> None:
         return iter(self.collection) # python do this for me
 
+    # Returns the collection as a 2d array in the format required by world.py
+    # author Jacob Sexton
+    # returns the 2 dimensional list to specify a set of attribute changes. 'No Change'  
     def toList(self) -> list: # Return the list in the format my teammates need it in
         myList : list = []
         for key, value in self.collection.items():
