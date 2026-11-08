@@ -87,6 +87,23 @@ function drawIsland(c,island,selected,year){
   rect(c,x-w*.51,y-h-17,Math.min(52,island.id.length*5+11),11,'#345f59');
   c.font='bold 8px monospace';c.fillStyle='#fff5d3';c.textBaseline='top';c.fillText(island.id,x-w*.51+4,y-h-15);
 }
+/** Small pixel tags under an island: disasters running there now (red) and queued ones due by this year (amber). */
+const TAG_TEXT={plague:'PLAGUE',disease:'EPIDEMIC',drought:'DROUGHT',tsunami:'TSUNAMI',storm:'STORM'};
+function drawDisasterTags(c,island,world){
+  const year=Number(world?.current_year)||1,tags=[];
+  const here=d=>!d.island||d.island===island.id;
+  for(const d of world?.active_disasters||[])
+    if(here(d)&&Number(d.start)<=year&&year<Number(d.end))tags.push([TAG_TEXT[d.type]||String(d.type).toUpperCase(),'#b24a38']);
+  for(const d of world?.disaster_schedule||[])
+    if(here(d)&&d.island&&Number(d.year)<=year)tags.push([`${TAG_TEXT[d.type]||String(d.type).toUpperCase()}?`,'#c08a2b']);
+  if(!tags.length)return;
+  const h=island.r*.64*island.aspect;
+  c.font='bold 8px monospace';c.textBaseline='top';
+  tags.slice(0,3).forEach(([text,color],i)=>{
+    const w=text.length*5+8,x=island.x-w/2,y=island.y+h+10+i*12;
+    rect(c,x,y,w,11,color);c.fillStyle='#fff5d3';c.fillText(text,x+4,y+2);
+  });
+}
 export function getPersonPositions(world,layout,time=0,running=false){
   const byId=new Map(layout.map(x=>[x.id,x]));
   const groups={};const out=[];
@@ -135,6 +152,7 @@ export function drawSea(canvas,world,positions,selection,runState,hiddenIslandId
   for (const island of layout) {
   if (island.id === hiddenIslandId) continue;
   drawIsland(c, island, selection?.type === 'island' && selection?.id === island.id, world?.current_year);
+  drawDisasterTags(c, island, world);
 }
 
 const people = getPersonPositions(world, layout, t, running);

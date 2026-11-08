@@ -4,13 +4,14 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="theme-color" content="#f4eedc" />
-  <title>Partial Wace Island Simulator</title>
+  <title>Partial Wace Mundus Novus</title>
   <link rel="stylesheet" href="./styles.css" />
+  <link rel="stylesheet" href="./merge.css" />
 </head>
 <body>
   <div id="app">
     <header class="masthead">
-      <div class="brand"><div class="brand-stamp" aria-hidden="true"><i></i><i></i><i></i></div><div><h1>Island Population Simulator</h1><div class="subbrand">PARTIAL WACE</div></div></div>
+      <div class="brand"><div class="brand-stamp" aria-hidden="true"><i></i><i></i><i></i></div><div><h1>Mundus Novus</h1><div class="subbrand">PARTIAL WACE</div></div></div>
       <div class="header-actions">
         <div id="connectionStatus" class="status-tag">CONNECTING...</div>
 
@@ -31,6 +32,9 @@
           <div id="randomizePanel" class="randomize-panel" hidden></div>
         </div>
 
+        <button id="importBtn" class="btn btn-subtle" type="button" title="Load a world from a .json file, e.g. data/seven_islands.json (7 islands, 94 people)">Import</button>
+        <input id="importFile" type="file" accept=".json,application/json" hidden />
+
         <button id="resetBtn" class="btn btn-subtle" type="button"><<< Reset</button>
         <button id="startBtn" class="btn btn-start" type="button">
           <span class="play-icon">>>></span> Start simulation
@@ -42,7 +46,8 @@
         <nav class="side-tabs" aria-label="Workspace tabs">
           <button class="tab active" data-tab="build" type="button">BUILD</button>
           <button class="tab" data-tab="profiles" type="button">PROFILES</button>
-          <button class="tab" data-tab="events" type="button">EVENT LOG <span id="logCount" class="tab-count">0</span></button>
+          <button class="tab" data-tab="disasters" type="button" title="Plague, disease, drought, tsunami, storm">DISASTERS <span id="disasterCount" class="tab-count" hidden>0</span></button>
+          <button class="tab" data-tab="events" type="button" title="Event log">LOG <span id="logCount" class="tab-count">0</span></button>
         </nav>
         <div id="leftContent" class="side-scroll"></div>
       </aside>
@@ -55,6 +60,17 @@
           </div>
 
           <div class="map-head-right">
+            <div class="view-tabs" role="tablist" aria-label="What to show in the centre">
+              <button class="view-tab active" data-view="map" role="tab" type="button" title="Island map only">MAP</button>
+              <button class="view-tab" data-view="split" role="tab" type="button" title="Map and relationship graph side by side">SPLIT</button>
+              <button class="view-tab" data-view="graph" role="tab" type="button" title="Relationship graph only">GRAPH</button>
+            </div>
+
+            <span class="zoom-ctl" id="mapZoomCtl" role="group" aria-label="Zoom the map">
+              <button id="zoomOutBtn" class="small-btn" type="button" title="Zoom out (or scroll the mouse wheel over the map)" aria-label="Zoom out">&minus;</button>
+              <button id="zoomInBtn" class="small-btn" type="button" title="Zoom in (or scroll the mouse wheel over the map)" aria-label="Zoom in">+</button>
+            </span>
+
             <button id="zoomBtn" class="small-btn" type="button" disabled>
               + ZOOM TO ISLAND
             </button>
@@ -64,6 +80,8 @@
             </div>
           </div>
         </div>
+        <div id="statsStrip" class="stats-strip" aria-live="off"></div>
+        <div id="stageViews" class="stage-views" data-view="map">
         <div id="mapFrame" class="map-frame" tabindex="0" aria-label="Editable pixel art map. Drop island or people profiles here. Drag islands to move or into a sidebar to delete.">
           <canvas id="seaCanvas" width="480" height="330" aria-label="Pixel map of the islands"></canvas>
           <div id="mapMessage" class="map-message" hidden></div>
@@ -83,8 +101,18 @@
             <div id="worldStatsBody" class="world-stats-body">
 
               <div>
-                <span>WORLD WEALTH</span>
+                <span>POPULATION</span>
+                <strong id="worldPopulation">0</strong>
+              </div>
+
+              <div>
+                <span>TOTAL COINS</span>
                 <strong id="worldWealth">0</strong>
+              </div>
+
+              <div title="Gini coefficient of coin holdings: 0 = equal, towards 1 = a few hold nearly everything">
+                <span>INEQUALITY (GINI)</span>
+                <strong id="worldGini">-</strong>
               </div>
 
               <div>
@@ -98,7 +126,34 @@
           <div id="mapLoading" class="sim-overlay" hidden><span class="blink">» »</span> SIMULATING <span class="blink">» »</span><small>Waiting for a new state from Python...</small></div>
           <div id="emptyHint" class="empty-hint" hidden>DRAG AN ISLAND HERE<br/><span>OR USE THE + PLACE BUTTON</span></div>
         </div>
-        <div class="map-foot"><div class="map-foot-help">drag land to move &nbsp; / &nbsp; drop on side panel to remove &nbsp; / &nbsp; click a person to inspect</div><div id="yearLabel">YEAR 1 / 30</div></div>
+        <section id="graphPanel" class="graph-panel" aria-label="Relationship graph" hidden>
+          <div class="graph-bar">
+            <div class="graph-title"><b>WHO IS TIED TO WHOM</b><span id="graphSub" class="dim"></span></div>
+            <div id="graphChips" class="graph-chips" role="group" aria-label="Which kinds of relationship to draw"></div>
+            <div class="graph-controls">
+              <label class="graph-control" title="Trust and distrust lines weaker than this are left out">
+                <span>MIN TRUST</span>
+                <input id="graphMinTrust" type="range" min="0.05" max="0.9" step="0.05" value="0.15" />
+                <output id="graphMinTrustValue">0.15</output>
+              </label>
+              <label class="graph-control">
+                <span>ISLAND</span>
+                <select id="graphIsland" class="graph-select"></select>
+              </label>
+              <span class="zoom-ctl" role="group" aria-label="Zoom the graph">
+                <button id="graphZoomOut" class="small-btn" type="button" title="Zoom out (or scroll the mouse wheel over the graph)" aria-label="Zoom graph out">&minus;</button>
+                <button id="graphZoomIn" class="small-btn" type="button" title="Zoom in (or scroll the mouse wheel over the graph)" aria-label="Zoom graph in">+</button>
+                <button id="graphZoomFit" class="small-btn" type="button" title="Show the whole graph again">FIT</button>
+              </span>
+            </div>
+          </div>
+          <div class="graph-frame">
+            <canvas id="graphCanvas" aria-label="Relationship graph. Click a dot for the person, a line for the relationship."></canvas>
+            <div id="graphEmpty" class="graph-empty" hidden></div>
+          </div>
+        </section>
+        </div>
+        <div class="map-foot"><div class="map-foot-help">drag land to move &nbsp; / &nbsp; drop on side panel to remove &nbsp; / &nbsp; click a person to inspect &nbsp; / &nbsp; scroll to zoom, drag the sea to pan &nbsp; / &nbsp; <a href="#assumptions" id="assumptionsLink">model assumptions &darr;</a></div><div id="yearLabel">YEAR 1 / 30</div></div>
         <div class="timeline-panel">
           <div class="timeline-header"><div><b>TIME MACHINE</b></div><button id="restoreBtn" class="small-btn" hidden>RESTORE THIS STATE</button></div>
           <div id="timeline" class="timeline"></div>
@@ -113,6 +168,13 @@
     </main>
     <div id="toast" class="toast" role="status" aria-live="polite" hidden></div>
   </div>
+  <footer id="assumptions" class="assumptions">
+    <details id="assumptionsBox">
+      <summary>WHAT THE MODEL ASSUMES</summary>
+      <p id="assumeNote" class="assume-note">Loading the model's assumptions...</p>
+      <div id="assumeBody" class="assume-body"></div>
+    </details>
+  </footer>
   <script type="module" src="./app.js"></script>
 </body>
 </html>
