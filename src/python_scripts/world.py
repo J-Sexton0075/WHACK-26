@@ -1,4 +1,3 @@
-import json
 
 class Island:
     def __init__(self, island_id, fertility, food_avail, wood_avail, regen_rate, weather, disease_rate, culture):
@@ -30,9 +29,6 @@ class Island:
     def to_dict(self):
         #Creates a snapshot copy of current attributes for MiroFish/Frontend.
         return self.__dict__.copy()
-
-    def passToMiroFish(self):
-        pass
 
 
 
@@ -130,32 +126,6 @@ class WorldState:
     def entities_get_agent(self, agent_id) -> Agent:
         return self.agents[agent_id]
 
-    # Returns whether an island in the world exists
-    # param island_id 
-    #       the key of the island that should be checked
-    # returns whether the island exists in the world
-    def entities_has_island(self, island_id) -> bool:
-        return island_id in self.islands.keys
-        
-    # Returns whether an agent in the world exists
-    # param agent_id 
-    #       the key of the agent that should be checked
-    # returns whether the agent exists in the world
-    def entities_has_agent(self, agent_id) -> bool:
-        return agent_id in self.agents.keys
-
-    # Removes a given island from the world
-    # param island_id
-    #       the key of the island that should be removed
-    def entities_remove_island(self, island_id) -> None:
-        self.islands.pop(island_id)
-
-    # Removes a given agent from the world
-    # param agent_id
-    #       the key of the agent that should be removed
-    def entities_remove_agent(self, agent_id) -> None:
-        self.agents.pop(agent_id)
-
     def log_event(self, event_type, agent_id, description, payload=None):
         event = {
             "year": self.current_year,
@@ -178,15 +148,6 @@ class WorldState:
             "agents": {a_id: agent.to_dict() for a_id, agent in self.agents.items()},
             "event_history": self.event_history
         }
-
-    # Updates the values that aren't associated with islands or agents
-    def update_general_values(self, sliced_vals : dict) -> None:
-        self.current_year = sliced_vals["current_year"]
-        self.max_years = sliced_vals["max_years"]
-        self.active_seed = sliced_vals["active_seed"]
-        self.scarcity_level = sliced_vals["scarcity_level"]
-        self.price_index = sliced_vals["price_index"]
-
 
     def changeVariables(self,arraysToChange): #arrayToChange - if there is a 0 it means no change so keep it the same. 2D array input from frontend
         for array in arraysToChange:

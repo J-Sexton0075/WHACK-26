@@ -13,7 +13,7 @@ default_agents : list = [
     Agent("a10","Tams","i2",31,"Nice") 
 ]
 
-default_islands : list [
+default_islands : list = [
     Island(island_id="i1", 
            fertility=1,
            food_avail=1,
