@@ -1,0 +1,127 @@
+/* ===================================================================
+   MERGED FROM WHACK v2: views, relationship graph, disasters, assumptions.
+   Loaded after styles.css; it only adds to the original look.
+   =================================================================== */
+
+/* four tabs now fit in the left column */
+.side-tabs .tab{font-size:10px;padding:0 2px;letter-spacing:0}
+.side-tabs .tab .tab-count{font-size:9px}
+@media(max-width:1120px){.side-tabs .tab{font-size:9px}}
+
+/* MAP / SPLIT / GRAPH */
+.view-tabs{display:inline-flex;border:1.5px solid var(--ink);background:#faf8ee}
+.view-tab{border:0;border-right:1px solid #c4c0b0;background:transparent;padding:4px 9px;font:700 10px var(--mono);letter-spacing:.3px}
+.view-tab:last-child{border-right:0}
+.view-tab:hover{background:#f4e6b9}
+.view-tab.active{background:var(--lemon);box-shadow:inset 0 -3px 0 #658b72}
+
+.center-stage{container-type:inline-size;container-name:stage}
+.map-foot-help a{color:#397b7b}
+.map-foot-help a:hover{color:#a65d4b}
+
+/* headline numbers, always visible: people, total coins, inequality, health, couples, feuds, disasters */
+.stats-strip{display:flex;flex-wrap:wrap;align-items:center;gap:4px 14px;padding:7px 10px;margin:0 0 9px;background:#f7f4e8;border:1px solid #b8bdb0;box-shadow:2px 2px 0 #d4d0ba;font:10px var(--mono);color:#617166}
+.stats-strip b{color:var(--ink);font-size:12px;font-variant-numeric:tabular-nums}
+.stats-strip .stat-tag{background:#f4c6b8;border:1px solid #c98b78;color:#7a2f22;padding:2px 6px;font-weight:700;letter-spacing:.3px}
+.stats-strip .stat-tag.queued{background:#f7df9c;border-color:#c7ad83;color:#5b4a1f}
+
+.stage-views{flex:1;min-height:0;display:flex;gap:12px;overflow-y:auto;overflow-x:hidden;padding:0 5px 5px 0}
+.stage-views > .map-frame,.stage-views > .graph-panel{flex:1 1 0;min-width:0}
+.stage-views[data-view="graph"] > .graph-panel{min-height:300px}
+.map-frame[hidden],.graph-panel[hidden]{display:none}
+@container stage (max-width: 780px){
+  .stage-views[data-view="split"]{flex-direction:column}
+  .stage-views[data-view="split"] > .map-frame{flex:1 0 270px}
+  .stage-views[data-view="split"] > .graph-panel{flex:1 0 300px}
+}
+
+/* the relationship graph */
+.graph-panel{display:flex;flex-direction:column;min-height:270px;background:#f7f4e8;border:3px solid #324c47;box-shadow:4px 4px 0 #b5b8a6}
+.graph-bar{display:flex;flex-wrap:wrap;align-items:center;gap:7px 12px;padding:8px 10px;border-bottom:2px solid #324c47;background:#efe9d5}
+.graph-title{display:flex;align-items:baseline;gap:8px;font:11px var(--mono);flex:1 1 100%}
+.graph-title b{letter-spacing:.6px}
+.graph-title .dim{color:#8a8f82;font-size:10px}
+.graph-chips{display:flex;flex-wrap:wrap;gap:5px;flex:1 1 auto}
+.graph-chip{display:inline-flex;align-items:center;gap:6px;font:700 10px var(--mono);padding:3px 8px;border:1px solid #b7b9a7;background:var(--white);cursor:pointer}
+.graph-chip i{display:inline-block;width:16px;height:0;border-top:3px solid var(--k)}
+.graph-chip i.dash{border-top-style:dashed}
+.graph-chip small{color:#8a8f82;font-weight:400}
+.graph-chip:hover{background:#fbf3d9}
+.graph-chip.off{opacity:.4;text-decoration:line-through}
+.graph-controls{display:flex;flex-wrap:wrap;align-items:center;gap:6px 12px}
+.graph-control{display:inline-flex;align-items:center;gap:6px;font:9px var(--mono);color:#6a7167}
+.graph-control input[type=range]{width:84px;accent-color:#486b5b}
+.graph-control output{min-width:28px;font:700 10px var(--mono);color:var(--ink)}
+.graph-select{height:26px;font:10px var(--mono);background:var(--white);border:1px solid #b7b9a7;border-radius:0;color:var(--ink);max-width:110px}
+.graph-frame{position:relative;flex:1;min-height:0;background:#fffdf6}
+#graphCanvas{position:absolute;inset:0;width:100%;height:100%;display:block}
+.graph-empty{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);max-width:78%;text-align:center;pointer-events:none;color:#6e776d;font:11px/1.6 var(--mono);background:#fffdf6e6;padding:10px 14px;border:1px dashed #b7b9a7}
+.graph-empty[hidden]{display:none}
+
+/* DISASTERS tab */
+.disaster-box{background:#fffdf5;border:1px solid #c4c3b1;padding:10px;margin-top:8px}
+.disaster-blurb{font:10px/1.55 var(--mono);color:#6a7167;margin:6px 0 0}
+.scale-row{display:flex;align-items:center;gap:8px}
+.scale-row input[type=range]{flex:1;min-width:0;accent-color:#a65d4b}
+.scale-value{min-width:34px;text-align:right;font:700 12px var(--mono)}
+.scale-effect{margin-top:6px;padding:6px 8px;background:#f9e6df;border:1px solid #d9b2a5;font:10px/1.5 var(--mono);color:#7a2f22}
+.scale-ends{display:flex;justify-content:space-between;font:9px var(--mono);color:#8e907d;margin-top:2px}
+.queue-row{display:flex;align-items:center;gap:8px;padding:7px 8px;margin-bottom:5px;background:#fffcf3;border:1px solid #d0cfc1;font:10px/1.45 var(--mono)}
+.queue-row .grow b{display:block;font-size:11px}
+.queue-row.active{background:#f4e0dc;border-color:#d09e92}
+.queue-year{flex:0 0 auto;background:#e5eede;border:1px solid #819485;padding:2px 5px;font:700 9px var(--mono)}
+.queue-row.active .queue-year{background:#f4c6b8;border-color:#c98b78}
+.tab-count.alert{color:#b24a38;font-weight:700}
+
+/* PERSON inspector: relationships, recent events, interview */
+.rel-group{margin-bottom:9px}
+.rel-group h4{margin:0 0 4px;font:700 9px var(--mono);letter-spacing:.6px;color:#6a7167}
+.rel-row{display:flex;align-items:baseline;justify-content:space-between;gap:8px;width:100%;text-align:left;padding:5px 8px;margin-bottom:3px;background:#fffdf6;border:1px solid #cbd2c4;font:10px var(--mono);cursor:pointer}
+.rel-row:hover{background:#f0f2e7;border-color:#839e84}
+.rel-row b{color:#397b7b;font-size:11px}
+.rel-row span{color:#8a9387;font-size:9px;text-align:right}
+.rel-row i{display:inline-block;width:9px;height:0;border-top:3px solid var(--k);margin-right:6px;vertical-align:middle}
+.recent-event{font:10px/1.55 var(--mono);color:#555f57;padding:3px 0;border-bottom:1px dashed #d6d5c8}
+.recent-event:last-child{border-bottom:0}
+.recent-event b{color:#8d9286;font-weight:400;margin-right:6px}
+.edge-people{display:flex;gap:6px;margin-top:10px}
+.edge-people .rel-row{margin:0}
+.edge-note{font:11px/1.65 var(--mono);color:#555f57}
+.ask-form{display:flex;gap:6px;margin-top:8px}
+.ask-form .field-input{flex:1}
+.ask-form .full-btn{width:auto;margin:0;padding:0 12px}
+.ask-ideas{display:flex;flex-wrap:wrap;gap:5px;margin-top:8px}
+.ask-ideas button{border:1px solid #b7b9a7;background:var(--white);padding:3px 7px;font:9px var(--mono)}
+.ask-ideas button:hover{background:#fbf3d9}
+.ask-log{margin-top:9px;max-height:230px;overflow:auto}
+.ask-q{font:10px/1.5 var(--mono);color:#8a8f82;margin-top:6px}
+.ask-a{font:11px/1.55 var(--mono);color:var(--ink);padding:6px 8px;background:#fffdf6;border-left:3px solid #658b72;margin:2px 0 6px}
+.ask-a small{display:block;margin-top:3px;font-size:9px;color:#8a9387}
+
+/* the model's assumptions, at the bottom of the page */
+.assumptions{border-top:2px solid var(--ink);background:#f7f3e7;padding:14px 23px 40px;font:11px/1.6 var(--mono)}
+.assumptions details{max-width:1180px;margin:0 auto}
+.assumptions summary{cursor:pointer;font:700 11px var(--mono);letter-spacing:.8px;padding:4px 0}
+.assume-note{color:#6a7167;margin:8px 0 4px}
+.assume-group{margin-top:16px}
+.assume-group h3{margin:0 0 6px;font:700 11px var(--mono);letter-spacing:.5px;border-bottom:1px dashed #c4c5b7;padding-bottom:5px}
+.assume-grid{display:grid;grid-template-columns:max-content minmax(0,max-content) minmax(0,1fr);gap:5px 14px;align-items:baseline}
+.assume-grid code{font:700 10px var(--mono);color:var(--ink)}
+.assume-grid .v{font:10px var(--mono);font-variant-numeric:tabular-nums;color:#a65d4b;overflow-wrap:anywhere;max-width:340px}
+.assume-grid span{color:#555f57}
+.assume-notes{margin:14px 0 0;padding-left:18px;color:#555f57}
+.assume-notes li{margin-bottom:5px}
+@media(max-width:700px){.assume-grid{grid-template-columns:1fr}.assume-grid .v{max-width:none}.assumptions{padding:12px 11px 30px}}
+
+/* the app is exactly one screen tall; the assumptions footer sits below it, so the page scrolls */
+html,body{height:auto;min-height:100%}
+
+/* zoom controls (map and graph) */
+.zoom-ctl{display:inline-flex;gap:3px}
+.zoom-ctl .small-btn{min-width:26px;padding:3px 7px;font-weight:700}
+#seaCanvas,#graphCanvas{touch-action:none}
+.btn-start.is-stop{background:#f4c6b8;box-shadow:inset 0 -3px 0 #b24a38}
+.gene-row{display:flex;justify-content:space-between;gap:8px;font:10px/1.6 var(--mono);border-bottom:1px dashed #d6d5c8;padding:2px 0}
+.gene-row:last-child{border-bottom:0}
+.gene-row b{font-variant-numeric:tabular-nums}
+.gene-row span{color:#6a7167;font-variant-numeric:tabular-nums}

@@ -14,6 +14,8 @@ export const DEFAULT_CONFIG = {
   worldUrl: '/api/world',
   simulateUrl: '/api/simulate',
   resetUrl: '/api/reset',
+  interviewUrl: '/api/interview',
+  assumptionsUrl: '/api/assumptions',
   timeoutMs: 120000,
 };
 const config = () => ({...DEFAULT_CONFIG, ...(window.ISLAND_SIM_CONFIG || {})});
@@ -41,7 +43,11 @@ async function httpJson(url, method, body) {
       signal: controller.signal,
       cache: 'no-store',
     });
-    if (!response.ok) throw new Error(`${method} ${url}: HTTP ${response.status}`);
+    if (!response.ok) {
+      let detail = '';
+      try { detail = (await response.json())?.error || ''; } catch { /* not JSON */ }
+      throw new Error(`${method} ${url}: HTTP ${response.status}${detail ? ` - ${detail}` : ''}`);
+    }
     return await response.json();
   } finally { clearTimeout(timeout); }
 }
@@ -74,6 +80,29 @@ export async function resetWorld() {
     return r?.islands || r?.state || r?.world_state ? validateAndUnwrap(r) : requestWorldState();
   }
   return requestWorldState();
+}
+
+/**
+ * Ask one person a question (WHACK v2's "interview"). `world` is the world the user is looking at, so the
+ * answer matches the screen. Returns {answer, source: 'template' | 'llm', name, question}.
+ * A JS adapter may provide askPerson(agentId, question, world) / ask_person; otherwise POST interviewUrl.
+ */
+export async function askPerson(agentId, question, world) {
+  const b = methods();
+  if (b?.askPerson || b?.ask_person) {
+    const r = await (b.askPerson ?? b.ask_person).call(b, agentId, question, world);
+    return typeof r === 'string' ? JSON.parse(r) : r;
+  }
+  return httpJson(config().interviewUrl, 'POST', {agent_id: agentId, question, world});
+}
+
+/** The model's assumptions for the panel at the bottom of the page: live from Python, else the bundled copy. */
+export async function loadAssumptions() {
+  try {
+    return await httpJson(config().assumptionsUrl, 'GET');
+  } catch {
+    return httpJson('./data/assumptions.json', 'GET');
+  }
 }
 
 export async function bundledDefaults() {

@@ -1,0 +1,331 @@
+{
+  "groups": [
+    {
+      "id": "economy",
+      "title": "Economy and people",
+      "items": [
+        {
+          "name": "FOOD_NEED_ADULT",
+          "value": 3.0,
+          "text": "Food an adult eats per year. A child (under ADULT_AGE) eats FOOD_NEED_CHILD."
+        },
+        {
+          "name": "FOOD_NEED_CHILD",
+          "value": 1.5,
+          "text": "Food a child eats per year."
+        },
+        {
+          "name": "ADULT_AGE",
+          "value": 15,
+          "text": "Age at which a person works and eats like an adult."
+        },
+        {
+          "name": "SKILL_MAX",
+          "value": 10.0,
+          "text": "Skills run from 1 to this; production formulas use skill / SKILL_MAX."
+        },
+        {
+          "name": "REGEN_BASE",
+          "value": 0.3,
+          "text": "Each year an island's wild food and wood regrow this share (x the island's regeneration rate) of the gap to their highest value."
+        },
+        {
+          "name": "SCARCITY_LOSS",
+          "value": 0.5,
+          "text": "World scarcity 1.0 cuts farm output and the stock maxima by this share."
+        },
+        {
+          "name": "TOOL_BONUS",
+          "value": 0.3,
+          "text": "Output rises by this share while a person holds a tool; tools wear out by TOOL_WEAR a year."
+        },
+        {
+          "name": "SHORTAGE_DAMAGE",
+          "value": 45,
+          "text": "Health lost at a 100% food shortfall; a fully fed year heals RECOVERY."
+        },
+        {
+          "name": "ILLNESS_DAMAGE",
+          "value": 10,
+          "text": "Health lost by someone who catches the island's everyday illness. The chance is the island's disease_risk."
+        },
+        {
+          "name": "CROSS_ISLAND_COST",
+          "value": 0.25,
+          "text": "Extra price paid when buying from another island (only if islands trade)."
+        },
+        {
+          "name": "BIRTH_CHANCE",
+          "value": 0.35,
+          "text": "Chance a birth attempt succeeds. Each island gets about two attempts a year, more on a bigger island, and needs room: (4 + 6 x fertility) x its size."
+        },
+        {
+          "name": "EVENT_LOG_CAP",
+          "value": 300,
+          "text": "The event log keeps this many of the newest events."
+        }
+      ]
+    },
+    {
+      "id": "conflict",
+      "title": "Conflict and trust",
+      "items": [
+        {
+          "name": "DISPUTE_SCALE",
+          "value": 0.45,
+          "text": "Chance a trade is refused = this x average aggression x (1 - average cooperation); STRANGER_DISPUTE times likelier across the sea."
+        },
+        {
+          "name": "RAID_SCALE",
+          "value": 0.7,
+          "text": "Chance a starving adult raids = this x aggression x (1 - cooperation); RAID_SUCCESS is the chance it works."
+        },
+        {
+          "name": "RAID_INJURY",
+          "value": 15,
+          "text": "Health a failed raider loses."
+        },
+        {
+          "name": "TRUST_DECAY",
+          "value": 0.95,
+          "text": "Trust keeps this share of its distance from neutral each year."
+        }
+      ]
+    },
+    {
+      "id": "social",
+      "title": "Social life: couples, lessons, feuds",
+      "items": [
+        {
+          "name": "PAIR_AGES",
+          "value": "18 to 45",
+          "text": "Adults in this age range can form a couple."
+        },
+        {
+          "name": "PAIR_CHANCE",
+          "value": 0.3,
+          "text": "Yearly chance that a single adult with an eligible unrelated neighbour on the island pairs up with the most compatible one (trust, similar cooperation)."
+        },
+        {
+          "name": "PAIR_TRUST",
+          "value": 0.35,
+          "text": "Trust a new couple starts with; it grows by PAIR_TRUST_YEARLY each year together."
+        },
+        {
+          "name": "MENTOR_MIN_AGE",
+          "value": 30,
+          "text": "A teacher is at least this old."
+        },
+        {
+          "name": "MENTEE_AGES",
+          "value": "8 to 24",
+          "text": "A pupil is in this age range."
+        },
+        {
+          "name": "MENTOR_CHANCE",
+          "value": 0.5,
+          "text": "Yearly chance a young person gets a lesson from a parent (if experienced) or else the most skilled adult on the island."
+        },
+        {
+          "name": "MENTOR_STEP",
+          "value": 0.15,
+          "text": "A lesson closes this share of the gap in the teacher's best skill. Skills only move toward the teacher's and never past it."
+        },
+        {
+          "name": "GRUDGE_RAID",
+          "value": 0.6,
+          "text": "Grudge a victim holds against a raider (a refused trade gives GRUDGE_QUARREL)."
+        },
+        {
+          "name": "GRUDGE_DECAY",
+          "value": 0.9,
+          "text": "Grudges keep this share each year and are forgotten below GRUDGE_MIN."
+        },
+        {
+          "name": "FEUD_SCALE",
+          "value": 0.5,
+          "text": "Retaliation chance = this x (own grudge + FEUD_FRIENDS x friends' grudges) x (0.5 + the victim's aggression), capped at FEUD_MAX."
+        },
+        {
+          "name": "FEUD_FRIEND_TRUST",
+          "value": 0.2,
+          "text": "A friend is someone on the same island whom the victim trusts at least this much (or kin) and who shares the grudge."
+        },
+        {
+          "name": "FEUD_TAKE",
+          "value": 0.5,
+          "text": "Share of the offender's food above need that the victim takes back in a retaliation; the offender also loses FEUD_INJURY health."
+        },
+        {
+          "name": "GRUDGE_RETALIATION",
+          "value": 0.5,
+          "text": "Grudge the offender then holds against the victim, so feuds can escalate."
+        }
+      ]
+    },
+    {
+      "id": "migration",
+      "title": "Migration",
+      "items": [
+        {
+          "name": "MIGRATE_HUNGER",
+          "value": 0.8,
+          "text": "Hunger motive: an adult who got less than this share of the food they need may leave for a cheaper-food island with room."
+        },
+        {
+          "name": "MIGRATE_PRICE_GAIN",
+          "value": 0.2,
+          "text": "... where food costs at least this much less. Chance per year: MIGRATE_CHANCE."
+        },
+        {
+          "name": "FLIGHT_COOPERATION",
+          "value": 0.65,
+          "text": "Feud-flight motive: a person at least this cooperative (0-1) ..."
+        },
+        {
+          "name": "FLIGHT_FEUDS",
+          "value": 2,
+          "text": "... who is caught up in at least this many live feuds (held or suffered) may leave for the calmest island with room. Chance per year: FLIGHT_CHANCE x feuds / this, at most 0.9."
+        },
+        {
+          "name": "TRADE_MOVE_GAIN",
+          "value": 0.3,
+          "text": "Trade motive: someone may move to an island where a good they have to sell fetches at least this much more."
+        },
+        {
+          "name": "TRADE_MOVE_TRADER",
+          "value": 0.3,
+          "text": "Yearly chance a trader chases a better market; TRADE_MOVE_OTHER for anyone else with a big surplus."
+        }
+      ]
+    },
+    {
+      "id": "genes",
+      "title": "Genes",
+      "items": [
+        {
+          "name": "GENE_TRAITS",
+          "value": "farming, hunting, crafting, cooperation, aggression",
+          "text": "Five traits have two alleles each. A child gets one randomly chosen allele from each parent and its trait is their average (no dominant or recessive alleles)."
+        },
+        {
+          "name": "GENE_SPREAD",
+          "value": 0.2,
+          "text": "A founder's two alleles for a trait sit up to this far either side of the value they were given, so founders look the same as without genetics."
+        },
+        {
+          "name": "MUTATION_RATE",
+          "value": 0.05,
+          "text": "Chance that an inherited allele mutates."
+        },
+        {
+          "name": "MUTATION_STEP",
+          "value": 0.1,
+          "text": "A mutation shifts the allele by up to this much; alleles stay between 0 and 1."
+        },
+        {
+          "name": "GENE_TRAIT_MIN",
+          "value": 0.05,
+          "text": "A child's trait is the average of its two alleles, never below this."
+        }
+      ]
+    },
+    {
+      "id": "disasters",
+      "title": "Disasters",
+      "items": [
+        {
+          "name": "DISASTER_PARAMS",
+          "value": "plague: lethality 0.7, health_hit 50, contact 1.0, goods 0.0, stock 0.0; disease: lethality 0.35, health_hit 30, contact 0.6, goods 0.0, stock 0.0; tsunami: lethality 0.8, health_hit 40, contact 1.0, goods 1.0, stock 0.8; storm: lethality 0.15, health_hit 20, contact 0.5, goods 0.6, stock 0.5; drought: lethality 0.0, health_hit 0, contact 0.0, goods 0.0, stock 0.0",
+          "text": "Per type: lethality (chance an exposed person dies at scale 1), health_hit, contact (share exposed), goods and stock (share destroyed at scale 1)."
+        },
+        {
+          "name": "DROUGHT_LOSS",
+          "value": 0.85,
+          "text": "A drought of scale 1 takes this share of farm output and regrowth."
+        },
+        {
+          "name": "VULNERABLE_AGES",
+          "value": "5 to 55",
+          "text": "Anyone younger or older than this range is VULNERABLE_FACTOR times as likely to die; someone already at 0 health, up to WEAK_FACTOR more."
+        },
+        {
+          "name": "DEATH_CAP",
+          "value": 0.95,
+          "text": "Nobody exposed has more than this chance of dying, whatever the scale."
+        },
+        {
+          "name": "RANDOM_DISASTER_SCALE",
+          "value": "0.15 to 0.8",
+          "text": "A chance disaster (world setting 'chance per year') draws its scale between these."
+        }
+      ]
+    }
+  ],
+  "notes": [
+    "Lessons change a person's skill but not their alleles, so a taught skill is not passed on to children.",
+    "Gene dice have their own random stream. Children no longer follow the old parent-average rule, so a run with genetics is a different world from the same seed without it (world setting 'Genes').",
+    "Skills are stored 1 to 10 and cooperation/aggression 0 to 100; an allele is 0 to 1, so a skill is the allele times 10 and a temperament trait the allele times 100.",
+    "Scale runs from 0 to 1 for every disaster. 1 is the worst the model has: a plague or tsunami at scale 1 kills most of the people it reaches; 0.5 kills about half as many; 0 does nothing.",
+    "The model has no sexes: any two unrelated single adults on one island can become a couple, and (with social life on) children are born only to couples.",
+    "Feuds move food and health, never coins. Migration carries all belongings, and the partner and young children go too, so total coins only change when a whole family line dies out.",
+    "Total coins = the sum of every living person's wealth. Inequality is the Gini coefficient of those coins: 0 means everyone holds the same, values towards 1 mean a few hold nearly everything.",
+    "Dice are seeded from the world seed and the year, so the same world and seed replay the same year. Social life changes births, so a run with it on is a different world from the same seed with it off.",
+    "Names: only the first generation can have chosen names. A child is named after the island it was born on (i1 = a, i2 = b ... i7 = g) and a running number for that island, so the 21st person registered on i1 is a21, wherever they later live."
+  ],
+  "disasters": {
+    "plague": {
+      "text": "One sweep through the islands you choose (all if none). Health damage and deaths among everyone it reaches.",
+      "lethality": 0.7,
+      "health_hit": 50,
+      "instant": true,
+      "contact": 1.0,
+      "goods": 0.0,
+      "stock": 0.0,
+      "default_length_hint": "one year"
+    },
+    "disease": {
+      "text": "An epidemic that lasts several years. Each year about 60% of the people in range are exposed; weaker ones die.",
+      "lethality": 0.35,
+      "health_hit": 30,
+      "instant": false,
+      "contact": 0.6,
+      "goods": 0.0,
+      "stock": 0.0,
+      "default_length_hint": "2 to 4 years"
+    },
+    "tsunami": {
+      "text": "Hits ONE island (random if none is chosen). Stores, goods and wild stocks are washed away and many drown.",
+      "lethality": 0.8,
+      "health_hit": 40,
+      "instant": true,
+      "contact": 1.0,
+      "goods": 1.0,
+      "stock": 0.8,
+      "default_length_hint": "one year"
+    },
+    "storm": {
+      "text": "Like a tsunami but milder: it destroys part of the goods and stocks and kills few.",
+      "lethality": 0.15,
+      "health_hit": 20,
+      "instant": true,
+      "contact": 0.5,
+      "goods": 0.6,
+      "stock": 0.5,
+      "default_length_hint": "one year"
+    },
+    "drought": {
+      "text": "Lasts several years. Farm output and wild-food regrowth fall; nobody dies directly, they go hungry.",
+      "lethality": 0.0,
+      "health_hit": 0,
+      "instant": false,
+      "contact": 0.0,
+      "goods": 0.0,
+      "stock": 0.0,
+      "default_length_hint": "2 to 6 years"
+    }
+  },
+  "drought_loss": 0.85,
+  "avg_vulnerability": 1.1,
+  "note": "These constants are modelling choices, not measurements: change them in sim_constants.py and the outcomes can change."
+}

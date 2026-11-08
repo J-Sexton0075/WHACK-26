@@ -42,7 +42,7 @@ class Agent:
         # Physical & Economic State
         self.age = age
         self.health = 100         # 0 (dead) to 100 (perfect)
-        self.wealth = 0.0
+        self.wealth = 20.0        # coins (WHACK v2 starts people with 20; trade needs coins to spend)
         self.occupation = occupation
         self.is_alive = True
         
@@ -62,13 +62,23 @@ class Agent:
         self.aggression_trait = 50    # 0 to 100
         self.needs = []               # e.g., ["food", "tools"]
         self.goals = []               # e.g., ["accumulate wealth"]
-        self.trust_graph = {}         # Maps other agent_ids to a trust score (0-100)
+        self.trust_graph = {}         # Maps other agent_ids to a trust score (0-100, 50 = neutral)
+
+        # Social life (WHACK v2): all of it is stored on the person, so it travels with the JSON the frontend sends back
+        self.last_fed = 1.0           # share of last year's food need that was met (0-1)
+        self.parents = []             # agent_ids of the two parents (empty for founders)
+        self.partner_id = None        # agent_id of this person's partner, if any
+        self.partner_since = None     # year the couple formed
+        self.mentor = None            # {"mentor": agent_id, "skill": "farming", "year": 3}: the latest lesson received
+        self.grudges = {}             # offender agent_id -> grudge strength this person holds (0..)
+        self.cause_of_death = ""
+        self.genes = {}               # trait -> [allele, allele] (0..1), see genetics.py; filled in by the engine for founders
 
     def changeVariables(self,arraysToChange): #arrayToChange - if there is a 0 it means no change so keep it the same. 2D array input from frontend
         for array in arraysToChange:
             variable_name = array[0]
             new_value = array[1]
-            
+
             if new_value != "No Change" and variable_name in self.__dict__:
                 self.__dict__[variable_name] = new_value
 
@@ -81,15 +91,24 @@ class WorldState:
         self.current_year = 1
         self.max_years = 30
         self.active_seed = 42
-        self.scarcity_level = "moderate"
-        
+        self.scarcity_level = 0.5   # 0.0 - 1.0 (older files used "low"/"moderate"/"high"/"extreme"; the engine still accepts those)
+
         # Global Markets
         self.price_index = {"food": 1.0, "wood": 1.0, "tools": 5.0}
-        
+
         # World Entities (Stored in dictionaries using their IDs as keys)
         self.islands = {}
         self.agents = {}
         self.event_history = []  # List of raw dictionaries for UI events
+
+        # Rules and shocks merged from WHACK v2 (all editable in the frontend, all sent back on Start)
+        self.social_life = True          # couples, lessons, feuds (children are born only to couples)
+        self.migration_enabled = True    # people may move between islands (hunger, feud flight, trade)
+        self.island_trade = True         # islands buy and sell goods from each other
+        self.genetics = True             # children inherit alleles from both parents (False: the old parent-average rule)
+        self.disaster_rate = 0.0         # chance per year of a random disaster (0 = only the queued ones)
+        self.disaster_schedule = []      # queued disasters: {"id","type","severity","island","year","length"}
+        self.active_disasters = []       # running ones (drought, disease): {"id","type","severity","island","start","end"}
 
     def get_alive_agents(self):
         return [agent for agent in self.agents.values() if agent.is_alive]
@@ -135,7 +154,9 @@ class WorldState:
             "payload": payload if payload else {}
         }
         self.event_history.append(event)
-        
+        if len(self.event_history) > 300:      # keep the newest (sim_constants.EVENT_LOG_CAP); older ones are only history
+            del self.event_history[:-300]
+
     def serialize_state_for_frontend(self):
         #Packages the world into a Dictionary ready for FastAPI to send to React
         return {
@@ -146,7 +167,14 @@ class WorldState:
             "price_index": self.price_index,
             "islands": {i_id: island.to_dict() for i_id, island in self.islands.items()},
             "agents": {a_id: agent.to_dict() for a_id, agent in self.agents.items()},
-            "event_history": self.event_history
+            "event_history": self.event_history,
+            "social_life": self.social_life,
+            "migration_enabled": self.migration_enabled,
+            "island_trade": self.island_trade,
+            "genetics": self.genetics,
+            "disaster_rate": self.disaster_rate,
+            "disaster_schedule": self.disaster_schedule,
+            "active_disasters": self.active_disasters,
         }
 
     def changeVariables(self,arraysToChange): #arrayToChange - if there is a 0 it means no change so keep it the same. 2D array input from frontend

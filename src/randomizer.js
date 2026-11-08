@@ -266,6 +266,9 @@ function generate(config, original, profiles, received) {
   world.islands = {};
   world.agents = {};
   world.event_history = [];
+  // A new world has no queued or running disasters (the "chance per year" setting is kept).
+  world.disaster_schedule = [];
+  world.active_disasters = [];
 
   randomFields(world, config.fields.world);
 
@@ -305,6 +308,8 @@ function generate(config, original, profiles, received) {
       ...copy(profile.params),
       island_id: id
     };
+    // Stocks and prices the engine keeps per island belong to the island they were copied from.
+    for (const hidden of ['food_max', 'wood_max', 'capacity_scale', 'prices', 'birth_count']) delete island[hidden];
 
     randomFields(island, config.fields.island);
 
@@ -354,6 +359,10 @@ function generate(config, original, profiles, received) {
 
       // Do not copy relationship IDs from another world.
       agent.trust_graph = {};
+      Object.assign(agent, {
+        parents: [], partner_id: null, partner_since: null, mentor: null,
+        grudges: {}, last_fed: 1, cause_of_death: '', genes: {}
+      });
 
       world.agents[id] = agent;
       associations[id] = profile.id;
